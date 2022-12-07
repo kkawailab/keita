@@ -1,0 +1,23 @@
+{% extends 'layout.html' %}
+{% block content %}
+    <h1>{{ message }}</h1>
+    <form action="/create" method="post" enctype="multipart/form-data">
+        <label for="title">キャンプ場名</label><br>
+        <input type="text" name="title" value="">
+        <p></p>
+        <label for="date">日付</label><br>
+        <input type="date" name="date">
+        <p></p>
+        <label for="score">評価</label>
+        <input type="range" min="1" max="5" step="0.5" value="" name="score" class="input-range" /> 
+        <p></p>
+        <label for="image">写真</label>
+        <input type="file" name="image">
+        <p></p>
+        <label for="content">感想</label><br>
+        <textarea name="content" cols="40" rows="10"></textarea>
+        <p></p>
+        <button type="submit">保存する</button>
+        <a href='/'>キャンセル</a>
+    </form>
+{% endblock %}

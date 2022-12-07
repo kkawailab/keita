@@ -1,0 +1,29 @@
+{% extends 'layout.html' %}
+{% block content %}
+    <h1>{{ message }}</h1>
+
+    
+    <div class="row row-cols-2 row-cols-md-3 g-4">
+        {% for post in posts %}
+            <div class="col">
+                <div class="card">
+                    <img src={{ de_imgs[0] }} class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ post.name }}</h5>
+                        <p class="card-text">{{ post.review}}</p>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">{{ post.date}}</li>
+                            <li class="list-group-item">{{ post.score }}</li>
+                        </ul>
+                        <a href="#" class="btn btn-primary">詳細</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    <div>
+    </table>
+
+    <p><a href="/new">新規メモ</a></p>
+    
+
+{% endblock %}
