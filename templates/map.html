@@ -18,9 +18,13 @@
       }
     </style>
   </head>
+  <header>
+    {% extends 'layout.html' %}
+    {% block content %}
+  </header>
   <body>
     <div id="header"><b>Google Maps - 場所検索</b></div>
-    <div>施設名称検索 （例：マチュピチュ、万里の長城）</div>
+    <div>施設名称検索 （場所名）</div>
     <input type="text" id="keyword"><button id="search">検索実行</button>
     <button id="clear">結果クリア</button>
     
@@ -29,4 +33,5 @@
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDA3ZSsFToiwfYt26wfkmztbbNmMIfqh7k&libraries=places&callback=initMap"
     async defer></script>
   </body>
-</html>
+  {% endblock %}
+  </html>

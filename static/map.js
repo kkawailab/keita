@@ -8,10 +8,44 @@ function initMap() {
 
   map = new google.maps.Map(document.getElementById('map'), {
     center: pyrmont,
-    zoom: 15
+    zoom: 15,
+    streetViewControl: false
   });
-  nearbysearch(pyrmont)
+  
+
+  document.getElementById('search').addEventListener('click', function() {
+
+          var place = document.getElementById('keyword').value;
+          var geocoder = new google.maps.Geocoder();      // geocoderのコンストラクタ
+
+          geocoder.geocode({
+            address: place
+          }, function(results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+
+              var bounds = new google.maps.LatLngBounds();
+
+              for (var i in results) {
+                if (results[0].geometry) {
+                  // 緯度経度を取得
+                  var latlng = results[0].geometry.location;
+                  nearbysearch(latlng)
+                }
+              }
+            } else if (status == google.maps.GeocoderStatus.ZERO_RESULTS) {
+              alert("見つかりません");
+            } else {
+              console.log(status);
+              alert("エラー発生");
+            }
+          });
+        })
+  document.getElementById('clear').addEventListener('click', function() {
+    deleteMakers();
+  });
+
 }
+
 
 function createMarker(latlng, icn, place)
 {
@@ -34,6 +68,13 @@ function createMarker(latlng, icn, place)
     infoWindow.open(map, marker); // 吹き出しの表示
   });
 
+}
+
+function deleteMakers() {
+  if(marker != null){
+    marker.setMap(null);
+  }
+  marker = null;
 }
 
 // 周辺のカフェを検索
