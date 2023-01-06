@@ -1,0 +1,61 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="container">
+  <div class="my-5"> 
+    <h1 class="text-center border-bottom border-success">{{ post.name　}}</h1>
+  </div>
+  <div class="row">
+
+    <div class="col">
+      <img class="d-block mx-auto img-fluid w-75 rounded" src="{{ image }}" alt="サンプル画像">
+    </div>
+    <div class="col">
+      <h5 class="my-4">Adress　　{{ post.adress }}</h5>
+      {% if  post.score == 1 %}
+        <h5 class="text-warning"><span class="text-body">Score</span>　　★☆☆☆☆</h5>
+      {% elif  post.score == 2 %}
+        <h5 class="text-warning"><span class="text-body">Score</span>　　★★☆☆☆</h5>
+      {% elif  post.score == 3 %}
+        <h5 class="text-warning"><span class="text-body">Score</span>　　★★★☆☆</h5>
+      {% elif  post.score == 4 %}
+        <h5 class="text-warning"><span class="text-body">Score</span>　　★★★★☆</h5>
+      {% elif  post.score == 5 %}
+        <h5 class="text-warning"><span class="text-body">Score</span>　　★★★★★</h5>
+      {% endif %}
+      <h5 class="my-4">Date　　{{ post.date }}</h5>
+      <div class="row mb-5">
+        <div class="col-2">
+          <h5>Review</h5>
+        </div>
+        <div class="col-8 border rounded">
+          <p>{{ post.review }}</p>
+        </div>
+      </div>
+      <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+        <a class="btn btn-primary" href="/edit/{{ post.id }}" role="button">Edit</a>
+        <a class="btn btn-danger"  role="button" onclick="delete_check(); ">Delete</a>
+      </div>
+      
+    </div>
+  </div>
+</div>
+<script>
+  function delete_check(){
+
+    if(window.confirm('削除してよろしいですか？')){ // 確認ダイアログを表示
+      window.alert('削除しました');
+      location.href = "/delete/{{ post.id }}"
+      return true; // 「OK」時は送信を実行
+  
+    }
+    else{ // 「キャンセル」時の処理
+  
+      window.alert('キャンセルされました'); // 警告ダイアログを表示
+      
+      return false; // 送信を中止
+  
+    }
+  
+  }
+</script>
+{% endblock %}
