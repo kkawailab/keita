@@ -1,23 +1,21 @@
-import base64, re, geocoder, googlemaps, folium
-
+import base64, re, googlemaps, folium
 
 from flask import Flask, flash, redirect, render_template, request, url_for
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.mysql import INTEGER, MEDIUMBLOB, DATE
 from sqlalchemy.sql import func
-import re
+
 
 app = Flask(__name__)
 
-# db_uri = 'sqlite:///camp.db'
 UPLOAD_FOLDER = './static'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 # MySQLに接続するための情報
 app.config["SQLALCHEMY_DATABASE_URI"] = 'mysql+pymysql://{user}:{password}@{host}/{db_name}?charset=utf8'.format(**{
-      'user': "root",
-      'password': "keitamy",
-      'host': "localhost",
-      'db_name': "test"
+      'user': "Kta0000",
+      'password': "keita120717",
+      'host': "Kta0000.mysql.pythonanywhere-services.com",
+      'db_name': "Kta0000$test"
   })
 # おまじない
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -56,18 +54,20 @@ def init():
     db.create_all()
   
 
-  
+#トップページ
 @app.route('/')
 def top():
   
   posts = Post.query.all()
+  #キャンプ回数
   camp_count = Post.query.count()
+  #最後に行った日
   latest_date = db.session.query(func.max(Post.date)).one()
   latest_date = str(latest_date)
-  
   new_latest = re.sub('datetime.date|\(|\)|', '',latest_date)
-  print(new_latest)
+  new_latest = re.sub(',', '.',new_latest)
   
+  #画像データを表示できるように加工
   filebinary = []
   for post in posts :
         img_base64_string = re.sub('b\'|\'', '', str(post.image))
@@ -76,6 +76,7 @@ def top():
   
   return render_template('top.html', posts = posts, camp_count = camp_count, new_latest = new_latest, filebinary =filebinary)
 
+#投稿をリスト表示
 @app.route('/post')
 def post_list():
     posts = Post.query.all()
@@ -87,17 +88,19 @@ def post_list():
         
     return render_template('post_list.html', posts = posts, filebinary = filebinary)
 
+#新規作成
 @app.route('/new')
 def new_post():
 
     message = 'New post'
     return render_template('new.html', message = message)
   
+#作成完了
 @app.route('/create', methods=['POST', 'GET'])
 def create_post():
 
     message = 'create your memo'
-
+    #作成したデータを追加
     new_post = Post()
     new_post.name = request.form['title']
     new_post.adress = request.form['adress']
@@ -133,7 +136,7 @@ def create_post():
 
     return render_template('post_list.html', message = message, posts = posts, filebinary = filebinary)
 
-
+#記録の詳細
 @app.route('/post/detail/<int:id>')
 def detail(id):
     post = Post.query.get(id)
@@ -141,12 +144,14 @@ def detail(id):
     image = f'data:image/png;base64,{img_base64_string}'
     return render_template('detail.html' , post = post, image = image)
 
+#編集
 @app.route('/edit/<int:id>')
 def edit(id):
     post = Post.query.get(id)
     
     return render_template('edit.html', post = post)
 
+#編集完了
 @app.route('/update/<int:id>', methods=['POST'])
 def update(id):
     
@@ -185,6 +190,7 @@ def update(id):
 
     return render_template('post_list.html',  posts = posts, filebinary = filebinary)
 
+#削除
 @app.route('/delete/<int:id>')
 def delete(id):
     delete_post = Post.query.get(id)
@@ -201,7 +207,7 @@ def delete(id):
 
     return render_template('post_list.html',  posts = posts, filebinary = filebinary)
     
-
+#地図表示
 @app.route('/map')
 def map():
     map = folium.Map(
@@ -213,9 +219,19 @@ def map():
         #緯度経度のデータが無いときは回避
         if not post.lat:
             continue
+        if post.score == 1:
+            pop = post.name+ "<br> " +str(post.date) + "<br> ★☆☆☆☆" 
+        elif post.score == 2:
+            pop = post.name+ "<br> " +str(post.date) + "<br> ★★☆☆☆" 
+        elif post.score == 3:
+            pop = post.name+ "<br> " +str(post.date) + "<br> ★★★☆☆" 
+        elif post.score == 4:
+            pop = post.name+ "<br> " +str(post.date) + "<br> ★★★★☆" 
+        elif post.score == 5:
+            pop = post.name+ "<br> " +str(post.date) + "<br> ★★★★★" 
         folium.Marker(
             location=[post.lat, post.lng],
-            popup=folium.Popup(post.name, post.date, max_width=500, min_width=0),
+            popup=folium.Popup(pop, max_width=500, min_width=0),
             icon=folium.Icon(icon="tree-conifer", icon_color='#F0F0F0', color="green")
         ).add_to(map)
     return map._repr_html_()
