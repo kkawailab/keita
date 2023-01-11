@@ -13,7 +13,7 @@ ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 # MySQLに接続するための情報
 app.config["SQLALCHEMY_DATABASE_URI"] = 'mysql+pymysql://{user}:{password}@{host}/{db_name}?charset=utf8'.format(**{
       'user': "Kta0000",
-      'password': "keita120717",
+      'password': "----",
       'host': "Kta0000.mysql.pythonanywhere-services.com",
       'db_name': "Kta0000$test"
   })
@@ -168,7 +168,7 @@ def update(id):
     
     #住所から緯度経度を算出
     location = update_post.adress
-    gm = googlemaps.Client(key='AIzaSyDDRUKKjqJDkDZrSePsD1Y_AbhpfGt8WQw')
+    gm = googlemaps.Client(key='---')
     res = gm.geocode(location)
     try:
         update_post.lat = res[0]['geometry']['location']['lat']
